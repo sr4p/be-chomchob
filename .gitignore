@@ -1,5 +1,8 @@
-*.env
-dev.env
+**/.terraform/*
+
+# dev.env
+.DS_Store
+package-lock.json
 
 # Logs
 logs
