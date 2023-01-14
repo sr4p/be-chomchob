@@ -1,8 +1,17 @@
+#terraform
 **/.terraform/*
+.terraform.lock.hcl
+.terraform
+terraform.tfstate.d
+variables.tf
+
+# GCP
+gcp.json
 
 # dev.env
 .DS_Store
 package-lock.json
+*.backup
 
 # Logs
 logs

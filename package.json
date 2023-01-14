@@ -4,6 +4,7 @@
   "main": "./src/server.ts",
   "license": "MIT",
   "scripts": {
+    "start": "ts-node src/server.ts",
     "dev": "env-cmd -f dev.env nodemon src/server.ts"
   },
   "dependencies": {

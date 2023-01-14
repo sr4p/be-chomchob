@@ -27,12 +27,8 @@ app.use(
 );
 app.use(express.static(path.resolve(__dirname, ".")));
 
-app.all("*", (req: Request, res: Response) => {
-  res.send({ message : "Stop! ⛔️" });
-});
-
 app.get("/", (req: Request, res: Response) => {
-  res.send({ status : true });
+  res.send({ status : true, message : "Say Hi. 🌱" });
 });
 
 app.listen(port, async() => {
