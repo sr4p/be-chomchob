@@ -1,19 +1,19 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
-import { role } from '../controller/middleware';
 
 export default (sequelize : Sequelize ) => {
-  class User extends Model {
+  class Wallet extends Model {
     public id!: string;
     public address!: string;
+
     public name!: string;
-    public username!: string;
-    public password!: string;
-    public role!: role;
+    public symbol!: string;
+    public price!: number;
+    public supply!: number;
     public created_at!: Date;
     public updated_at!: Date;
   }
 
-  User.init({
+  Wallet.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -21,27 +21,15 @@ export default (sequelize : Sequelize ) => {
     },
     address: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      unique: true
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    username: {
-      type: DataTypes.STRING,
+    balance: {
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
-      unique: true
+      defaultValue: 0
     },
-    password: {
+    symbol: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    role: {
-      type: DataTypes.ENUM({
-        values: [...Object.values(role)]
-      }),
-      defaultValue : role.user
     },
     created_at: {
       type: DataTypes.DATE,
@@ -50,16 +38,16 @@ export default (sequelize : Sequelize ) => {
     updated_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
-    },
+    }
   },{
     sequelize ,
-    tableName: 'users',
+    tableName: 'wallet',
     hooks: {
-      beforeUpdate: (alias: User) => {
+      beforeUpdate: (alias: Wallet) => {
         alias.updated_at = new Date();
       }
     }
   })
 
-  return User;
+  return Wallet;
 }

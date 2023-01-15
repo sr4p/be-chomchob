@@ -27,11 +27,13 @@ export default (sequelize : Sequelize ) => {
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     supply: {
-      type: DataTypes.DECIMAL(),
-      allowNull: false
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0
     },
     created_at: {
       type: DataTypes.DATE,

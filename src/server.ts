@@ -4,6 +4,7 @@ import path from 'path'
 import { wallet } from "./router/wallet";
 import { auth } from "./router/auth";
 import { getSequelize } from "./configs/db";
+import { crypto } from "./router/crypto";
 
 const app: Application = express();
 const port: number = 9999;
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname, ".")));
 
 app.use("/wallet", wallet)
+app.use("/crypto", crypto)
 app.use("/auth", auth)
 
 app.listen(port, () => {

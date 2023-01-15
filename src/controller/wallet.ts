@@ -3,23 +3,13 @@ declare interface Request extends express.Request {
   auth? : { [key:string] : any }
 }
 
-export const cryptoBalance = (req : Request, res : Response) => {
+// ผู้ดูแลระบบสามารถเพิ่มและลดยอดคงเหลือสกุลเงินดิจิทัลของผู้ใช้ได้
+export const walletBalance = (req : Request, res : Response) => {
   res.json({});
 }
 
-export const getBalance = (req : Request, res : Response) => {
-  res.json({});
-}
-
-export const addCrypto = (req : Request, res : Response) => {
-  res.json({});
-}
-
-export const exchangeRate = (req : Request, res : Response) => {
-  res.json({});
-}
-
-export const cryptoTransfer = (req : Request, res : Response) => {
+// ผู้ใช้สามารถโอนสกุลเงินดิจิทัลเดียวกันไปยังผู้อื่นได้
+export const walletTransfer = (req : Request, res : Response) => {
   res.json({});
 }
 

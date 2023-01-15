@@ -20,8 +20,8 @@ export const signIn = async(req : Request, res : Response) => {
   const profile = await User(sequelize).findOne({ where : { username : user , password }})
   if(!profile) res.status(404).send()
 
-  const { id , username , role} = profile?.dataValues
-  const token : string = JWT.sign({ id , username, role }, process.env.JWT_SECRETKEY+"", { expiresIn: /*configs.JWT.EXPIREIN*/ "1d" })
+  const { id , username , role , address } = profile?.dataValues
+  const token : string = JWT.sign({ id , username, role , address }, process.env.JWT_SECRETKEY+"", { expiresIn: "1d" })
 
   res.json({ token });
 }
