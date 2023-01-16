@@ -1,5 +1,4 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
-
 export default (sequelize : Sequelize ) => {
   class Crypto extends Model {
     public id!: string;
@@ -23,7 +22,8 @@ export default (sequelize : Sequelize ) => {
     },
     symbol: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),

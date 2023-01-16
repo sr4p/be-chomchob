@@ -4,11 +4,8 @@ export default (sequelize : Sequelize ) => {
   class Wallet extends Model {
     public id!: string;
     public address!: string;
-
-    public name!: string;
-    public symbol!: string;
-    public price!: number;
-    public supply!: number;
+    public balance!: number;
+    public crypto_id!: string;
     public created_at!: Date;
     public updated_at!: Date;
   }
@@ -27,9 +24,9 @@ export default (sequelize : Sequelize ) => {
       allowNull: false,
       defaultValue: 0
     },
-    symbol: {
-      type: DataTypes.STRING,
-      allowNull: false
+    crypto_id : {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,
@@ -45,6 +42,7 @@ export default (sequelize : Sequelize ) => {
     hooks: {
       beforeUpdate: (alias: Wallet) => {
         alias.updated_at = new Date();
+        
       }
     }
   })
