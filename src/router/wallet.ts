@@ -10,6 +10,6 @@ router.get("/", roles([role.admin,role.user]),(_,res : Response) => (res.json({ 
 router.post("/balance", roles([role.admin]),walletBalance);
 
 //@TODO: user
-router.post("/transfer ", roles([role.user]),walletTransfer);
+router.post("/transfer", roles([role.user]),walletTransfer);
 
 export { router as wallet };

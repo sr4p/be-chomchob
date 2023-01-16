@@ -42,7 +42,6 @@ export default (sequelize : Sequelize ) => {
     hooks: {
       beforeUpdate: (alias: Wallet) => {
         alias.updated_at = new Date();
-        
       }
     }
   })
