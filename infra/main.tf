@@ -2,7 +2,7 @@ locals {
   env                 = terraform.workspace
   name                = "${local.env}-${var.app_name}"
   project_id          = var.project_id
-  database_name       = replace(local.name, "-", "")
+  database_name       = var.database_name
   database_username   = var.database_username
   database_password   = var.database_password
   database_auto_pause = var.database_auto_pause
@@ -86,9 +86,7 @@ resource "google_compute_instance" "gci" {
     ssh-keys = "${local.user_ssh}:${local.rsa}"
   }
 
-  metadata_startup_script = "sudo apt-get update; sudo apt-get install cmdtest; sudo apt-get install -y build-essential libssl-dev; curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash; source ~/.bashrc; nvm install 16; nvm use 16; sudo apt-get install -y nodejs; sudo apt-get install -y npm; npm i -g ts-node; git clone https://github.com/sr4p/be-chomchob.git; cd be-chomchob; git checkout dev; rm package-lock.json; yarn install; npx kill-port 9999 -f; yarn start"
-
-
+  # metadata_startup_script = "sudo apt-get update; sudo apt-get install cmdtest; sudo apt-get install -y build-essential libssl-dev; curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash; source ~/.bashrc; nvm install 16; nvm use 16; sudo apt-get install -y nodejs; sudo apt-get install -y npm; npm i -g ts-node; git clone https://github.com/sr4p/be-chomchob.git; cd be-chomchob; git checkout dev; rm package-lock.json; npm install; npx kill-port 9999 -f; npm run start"
   network_interface {
     subnetwork = google_compute_subnetwork.api_subnetwork.name
 
@@ -98,3 +96,29 @@ resource "google_compute_instance" "gci" {
   }
 }
 
+resource "google_sql_database_instance" "gsql-test" {
+  name              = "be-postgresql"
+  database_version  = "POSTGRES_12"
+  region            = local.region
+  settings {
+    tier = "db-f1-micro"
+    ip_configuration {
+      authorized_networks {
+        value = "0.0.0.0/0"
+      }
+      ipv4_enabled = true
+    }
+    # ip_configuration {
+    #   ipv4_enabled    = true
+    #   private_network = google_compute_network.api_network.id
+    # }
+  }
+  
+  root_password = local.database_password
+
+}
+
+resource "google_sql_database" "chomchob_db" {
+  name     = local.database_name
+  instance = google_sql_database_instance.gsql-test.name
+}

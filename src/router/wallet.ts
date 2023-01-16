@@ -1,6 +1,6 @@
 import { role, roles } from "../controller/middleware";
 import express, { Router, Response } from "express";
-import { walletBalance, walletTransfer } from "../controller/wallet";
+import { walletBalance, walletTransfers } from "../controller/wallet";
 
 const router: Router = express.Router();
 
@@ -10,6 +10,6 @@ router.get("/", roles([role.admin,role.user]),(_,res : Response) => (res.json({ 
 router.post("/balance", roles([role.admin]),walletBalance);
 
 //@TODO: user
-router.post("/transfer", roles([role.user]),walletTransfer);
+router.post("/transfer", roles([role.user]),walletTransfers);
 
 export { router as wallet };

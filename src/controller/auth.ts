@@ -11,8 +11,7 @@ export const signUp = async (req : Request, res : Response) => {
   const { password , ...rest } = req.body
   const crytoPass = password
   const data = await User(sequelize).create({ password : crytoPass, ...rest })
-
-  res.json(data);
+  res.status(201).json();
 }
 
 export const signIn = async(req : Request, res : Response) => {
@@ -23,7 +22,7 @@ export const signIn = async(req : Request, res : Response) => {
   const { id , username , role , address } = profile?.dataValues
   const token : string = JWT.sign({ id , username, role , address }, process.env.JWT_SECRETKEY+"", { expiresIn: "1d" })
 
-  res.json({ token });
+  res.status(200).json({ token });
 }
 
 export const userInfo = async (req : Request, res : Response) => {
@@ -34,5 +33,5 @@ export const userInfo = async (req : Request, res : Response) => {
   const info = await new Promise((resolve) => (JWT.verify(token, process.env.JWT_SECRETKEY+"", (error, decoded) => (error) ? resolve(null) : resolve(decoded))));
   if(!info) return res.status(403).send()
 
-  res.json(info);
+  res.status(200).json(info);
 }

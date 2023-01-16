@@ -24,14 +24,14 @@ export const getBalance = async(req : Request, res : Response) => {
   //   [sequelize.fn('SUM', sequelize.col('balance')), 'balance_crypto'],
   // ], group: ['crypto_id'] })
   
-  res.json(cryp.at(0));
+  res.json({ items : cryp.at(0)});
 }
 
 // ผู้ดูแลระบบสามารถเพิ่มสกุลเงินดิจิทัลอื่นๆ เช่น XRP, EOS, XLM ลงในกระเป๋าเงินได้
 export const addCrypto = async(req : Request, res : Response) => {
   const { name , symbol , price, supply } = req.body;
   const data = await Crypto(sequelize).create({ name , symbol , price, supply })
-  res.json(data);
+  res.status(201).json();
 }
 
 // ผู้ดูแลระบบสามารถจัดการอัตราแลกเปลี่ยนระหว่างสกุลเงินดิจิทัลได้
@@ -39,5 +39,5 @@ export const exchangeRate = async(req : Request, res : Response) => {
   const { id } = req.params;
   const { price } = req.body;
   const data = await Crypto(sequelize).update({ price },{ where : { id } , returning: true });
-  res.json(data.at(1));
+  res.status(200).json({ data });
 }
