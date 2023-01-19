@@ -31,13 +31,13 @@ export const getBalance = async(req : Request, res : Response) => {
 export const addCrypto = async(req : Request, res : Response) => {
   const { name , symbol , price, supply } = req.body;
   const data = await Crypto(sequelize).create({ name , symbol , price, supply })
-  res.status(201).json();
+  res.status(201).json({});
 }
 
 // ผู้ดูแลระบบสามารถจัดการอัตราแลกเปลี่ยนระหว่างสกุลเงินดิจิทัลได้
 export const exchangeRate = async(req : Request, res : Response) => {
   const { id } = req.params;
   const { price } = req.body;
-  const data = await Crypto(sequelize).update({ price },{ where : { id } , returning: true });
-  res.status(200).json({ data });
+  const data = await Crypto(sequelize).update({ price },{ where : { id } , returning: ["id","name","symbol","price","supply"] });
+  res.status(200).json(data[1].at(0));
 }

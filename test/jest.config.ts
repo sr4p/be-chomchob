@@ -8,6 +8,10 @@ export default {
   transform: {
     ...tsjPreset.transform,
   },
+  setupFilesAfterEnv: [
+    "<rootDir>/jest.setup.ts",
+    "jest-extended/all"
+  ],
   testPathIgnorePatterns: ["/node_modules/"],
   moduleDirectories: ["node_modules"],
   testEnvironment: "node"
