@@ -1,6 +1,8 @@
 import { DataTypes, Model, Sequelize } from 'sequelize';
 import { role } from '../controller/middleware';
 
+export interface roleUser { id :string, address : string , role : role , username : string };
+
 export default (sequelize : Sequelize ) => {
   class User extends Model {
     public id!: string;

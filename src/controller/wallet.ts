@@ -3,6 +3,7 @@ import Wallet from '../models/wallet.model';
 import { sequelize } from "../configs/db";
 import { Op, Sequelize } from "sequelize";
 import Crypto from '../models/crypto.model';
+import { roleUser } from "../models/users.model";
 
 declare interface Request extends express.Request {
   auth? : { [key:string] : any }
@@ -17,10 +18,10 @@ export const walletBalance = async(req : Request, res : Response) => {
 
   const data = await Wallet(sequelize).update({ balance: Sequelize.literal(`balance ${(amount || amount == 0 ) ? "+" : ""} ${amount}`)},{
     where: { address, crypto_id } ,
-    returning: true
+    returning: ["id","address","balance","crypto_id"]
   }).then(async (res) => {
     if(res.at(0) == 0 && amount > 0) return await Wallet(sequelize).create({  address, crypto_id , balance : amount })
-    return res.at(1);
+    return res[1].at(0);
   })
 
   res.status(200).json({data});
@@ -29,6 +30,9 @@ export const walletBalance = async(req : Request, res : Response) => {
 // ผู้ใช้สามารถโอนสกุลเงินดิจิทัลเดียวกันไปยังผู้อื่นได้
 export const walletTransfers = async(req : Request, res : Response) => {
   const { address_from, address_to, crypto, amount } = req.body
+  const { address } = <roleUser>req.auth
+
+  if(address != address_from) return res.status(403).json({ message : "Don't have permission"})
 
   const swarp = crypto.toLowerCase().split("/") // { btc } { tk }
   const coinFind = await Crypto(sequelize).findAll({ where : { symbol : { [Op.in] : swarp }}, attributes : ["id","symbol","price"]})
@@ -57,18 +61,19 @@ export const walletTransfers = async(req : Request, res : Response) => {
   // -> amount : 50
   // address_to (TK) 100฿ : (price:BTC/price:TK) * amount
 
-  const findPriceBySymbol = (symbol : string) : number => +coins[coins.findIndex((v:any) => v.symbol == symbol)].price
+  const findCid = (symbol : string) => coins[coins.findIndex((v:any) => v.symbol == symbol)]
+  const findPriceBySymbol = (symbol : string) : number => +(findCid(symbol)).price
 
   console.log(`${swarp[0]} :`,amount);
   console.log(`${swarp[1]} :`,(findPriceBySymbol(swarp[0]) / findPriceBySymbol(swarp[1])) * amount);
 
    const data = await Wallet(sequelize).update({ balance: Sequelize.literal(`CASE 
-  WHEN address::VARCHAR like '${address_from}'::VARCHAR THEN balance - ${amount}
-  WHEN address::VARCHAR like '${address_to}'::VARCHAR THEN balance + ${(findPriceBySymbol(swarp[0]) / findPriceBySymbol(swarp[1])) * amount }
+  WHEN (address::VARCHAR like '${address_from}'::VARCHAR AND crypto_id::VARCHAR like '${findCid(swarp[0]).crypto_id}'::VARCHAR) THEN balance - ${amount}
+  WHEN (address::VARCHAR like '${address_to}'::VARCHAR AND crypto_id::VARCHAR like '${findCid(swarp[1]).crypto_id}'::VARCHAR) THEN balance + ${(findPriceBySymbol(swarp[0]) / findPriceBySymbol(swarp[1])) * amount }
   ELSE balance END
   `)},{
-    where: { address : { [Op.in] : [address_from,address_to] }},
-    returning: true
+    where: { address : { [Op.in] : [address_from,address_to] }, crypto_id : { [Op.in] : coins.map(c => c.id) }},
+    returning: ["id","address","balance","crypto_id"]
   })
 
   res.status(200).json({ data : data[1] });

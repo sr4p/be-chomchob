@@ -1,15 +1,21 @@
+import request from "supertest";
+import { app } from "../../../src/server";
+
 describe("Response : Crypto ", () => {
     const apiPart = "localhost:9999"
-    const prefix = "crypto"
+    const prefix = "api/crypto"
     test(`returns with correct response @ POST ${apiPart}/${prefix}`, async () => {
-        expect({}).toMatchObject({})
+        const res = await request(app).post(`${apiPart}/${prefix}`).send({})
+        expect(res.body).toMatchObject({})
     })
 
     test(`returns with correct response @ GET ${apiPart}/${prefix}/balance`, async () => {
-        expect({}).toMatchObject({})
+        const res = await request(app).get(`${apiPart}/${prefix}/balance`)
+        expect(res.body).toMatchObject({})
     })
 
     test(`returns with correct response @ PUT ${apiPart}/${prefix}/exchange-rate/:id`, async () => {
-        expect({}).toMatchObject({})
+        const res = await request(app).put(`${apiPart}/${prefix}/exchange-rate/:id`)
+        expect(res.body).toMatchObject({})
     })
 })
