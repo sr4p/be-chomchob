@@ -4,7 +4,7 @@
   "main": "src/server.ts",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "env-cmd -f dev.env ts-node src/server.ts",
     "dev": "env-cmd -f dev.env nodemon src/server.ts",
     "test": "env-cmd -f dev.env jest --config=test/jest.config.ts --forceExit"
   },
